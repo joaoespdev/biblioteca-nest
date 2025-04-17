@@ -14,5 +14,5 @@ export class Rental {
 
   @IsNotEmpty()
   @IsArray()
-  bookIds: string[];
+  bookIds: string[]; // talvez não seja necessário
 }

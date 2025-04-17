@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsOptional, IsString, IsNumber } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsNumber,
+  Length,
+} from 'class-validator';
 
 export class Author {
   @IsNotEmpty()
@@ -14,6 +20,6 @@ export class Author {
   birthYear: number;
 
   @IsNotEmpty()
-  @IsString()
+  @Length(11, 14, { message: 'CPF must be between 11 and 14 characters' })
   cpf: string;
 }

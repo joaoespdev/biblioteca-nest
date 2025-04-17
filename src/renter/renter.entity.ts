@@ -4,6 +4,7 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  Length,
   Matches,
 } from 'class-validator';
 
@@ -31,6 +32,6 @@ export class Renter {
   birthDate: string;
 
   @IsNotEmpty()
-  @IsString()
+  @Length(11, 14, { message: 'CPF must be between 11 and 14 characters' })
   cpf: string;
 }
