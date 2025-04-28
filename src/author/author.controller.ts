@@ -8,11 +8,11 @@ import {
   Delete,
   Query,
 } from '@nestjs/common';
-import { AuthorService } from './authors.service';
+import { AuthorService } from './author.service';
 import { CreateAuthorDto } from './dto/create-author.dto';
 import { UpdateAuthorDto } from './dto/update-author.dto';
 
-@Controller('authors')
+@Controller('author')
 export class AuthorController {
   constructor(private readonly authorService: AuthorService) {}
 
