@@ -4,14 +4,14 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Knex } from 'knex';
-import { InjectKnex } from 'nestjs-knex';
 import { CreateAuthorDto } from './dto/create-author.dto';
 import { UpdateAuthorDto } from './dto/update-author.dto';
 import { Author } from '@interfaces/author.interface';
+import { InjectConnection } from 'nest-knexjs';
 
 @Injectable()
 export class AuthorService {
-  constructor(@InjectKnex() private readonly knex: Knex) {}
+  constructor(@InjectConnection() private readonly knex: Knex) {}
 
   async create(createAuthorDto: CreateAuthorDto): Promise<Author> {
     const [author] = await this.knex<Author>('authors')
