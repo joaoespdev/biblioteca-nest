@@ -16,8 +16,7 @@ export class CreateRentalDto {
   returnDate?: string;
 
   @IsNotEmpty()
-  @IsUUID()
-  renterId: string;
+  renterId: number;
 
   @IsNotEmpty()
   @IsArray()

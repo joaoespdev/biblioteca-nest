@@ -9,12 +9,7 @@ export async function up(knex: Knex): Promise<void> {
       .references('id')
       .inTable('rentals')
       .onDelete('CASCADE');
-    table
-      .integer('book_id')
-      .unsigned()
-      .references('id')
-      .inTable('books')
-      .onDelete('CASCADE');
+    table.uuid('book_id').references('id').inTable('books').onDelete('CASCADE');
     table.timestamps(true, true);
   });
 }

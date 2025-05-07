@@ -4,7 +4,7 @@ export interface Renter {
   gender?: string;
   phone: string;
   email: string;
-  birth_date: string;
+  birth_date: Date;
   cpf: string;
   created_at: string;
   updated_at: string;

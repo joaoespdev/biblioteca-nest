@@ -2,7 +2,7 @@ import { Knex } from 'knex';
 
 export async function up(knex: Knex): Promise<void> {
   return knex.schema.createTable('books', (table) => {
-    table.increments('id').primary();
+    table.uuid('id').primary().defaultTo(knex.raw('gen_random_uuid()')); // ou 'uuid_generate_v4()' se estiver usando a extensão uuid-ossp
     table.string('title').notNullable();
     table.string('isbn').notNullable();
     table.date('published_at').notNullable();

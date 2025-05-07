@@ -1,4 +1,10 @@
-import { IsArray, IsDateString, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsDateString,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+} from 'class-validator';
 
 export class CreateBookDto {
   @IsNotEmpty()
@@ -15,5 +21,6 @@ export class CreateBookDto {
 
   @IsNotEmpty()
   @IsArray()
-  authorIds: string[];
+  @IsNumber({}, { each: true })
+  authorIds: number[];
 }
