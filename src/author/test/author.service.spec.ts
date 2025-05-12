@@ -1,7 +1,7 @@
 import { AuthorService } from './author.service';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { CreateAuthorDto } from './dto/create-author.dto';
-import { UpdateAuthorDto } from './dto/update-author.dto';
+import { CreateAuthorInputDto } from './dto/create-author-input.dto';
+import { UpdateAuthorInputDto } from './dto/update-author-input.dto';
 import { Knex } from 'knex';
 
 describe('AuthorService', () => {
@@ -26,7 +26,7 @@ describe('AuthorService', () => {
   });
 
   it('should create an author', async () => {
-    const dto: CreateAuthorDto = {
+    const dto: CreateAuthorInputDto = {
       name: 'Jonny Bravo',
       gender: 'M',
       birthYear: 1980,
@@ -70,7 +70,7 @@ describe('AuthorService', () => {
   });
 
   it('should update an author', async () => {
-    const updateDto: UpdateAuthorDto = { name: 'New Name' };
+    const updateDto: UpdateAuthorInputDto = { name: 'New Name' };
     const updated = { id: 1, name: 'New Name' };
 
     mockKnexQueryBuilder.returning.mockReturnValueOnce([updated]);

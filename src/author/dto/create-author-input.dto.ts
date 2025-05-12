@@ -1,19 +1,21 @@
 import {
+  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
   Length,
 } from 'class-validator';
+import { GenderEnum } from '../enums/gender.enum';
 
-export class CreateAuthorDto {
+export class CreateAuthorInputDto {
   @IsNotEmpty()
   @IsString()
   name: string;
 
   @IsOptional()
-  @IsString()
-  gender?: string;
+  @IsEnum(GenderEnum)
+  gender?: GenderEnum;
 
   @IsNotEmpty()
   @IsNumber()

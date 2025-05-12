@@ -14,9 +14,9 @@ import { KnexModule } from 'nest-knexjs';
         client: 'pg',
         connection: {
           host: 'localhost',
-          user: 'admin',
-          password: '123',
-          database: 'crud_biblioteca',
+          user: 'postgres',
+          password: 'postgres',
+          database: 'biblioteca',
         },
       },
     }),

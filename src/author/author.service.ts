@@ -4,41 +4,48 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Knex } from 'knex';
-import { CreateAuthorDto } from './dto/create-author.dto';
-import { UpdateAuthorDto } from './dto/update-author.dto';
-import { Author } from '@interfaces/author.interface';
+import { CreateAuthorInputDto } from './dto/create-author-input.dto';
+import { UpdateAuthorInputDto } from './dto/update-author-input.dto';
+import { AuthorEntity } from 'src/author/entities/author.entity';
 import { InjectConnection } from 'nest-knexjs';
 
 @Injectable()
 export class AuthorService {
   constructor(@InjectConnection() private readonly knex: Knex) {}
 
-  async create(createAuthorDto: CreateAuthorDto): Promise<Author> {
-    const [author] = await this.knex<Author>('authors')
+  async create(
+    CreateAuthorInputDto: CreateAuthorInputDto,
+  ): Promise<AuthorEntity> {
+    const [author] = await this.knex<AuthorEntity>('authors')
       .insert({
-        name: createAuthorDto.name,
-        gender: createAuthorDto.gender,
-        birth_date: new Date(createAuthorDto.birthYear, 0, 1).toISOString(),
-        cpf: createAuthorDto.cpf,
+        name: CreateAuthorInputDto.name,
+        gender: CreateAuthorInputDto.gender,
+        birth_year: CreateAuthorInputDto.birthYear,
+        cpf: CreateAuthorInputDto.cpf,
       })
       .returning('*');
     return author;
   }
 
-  async findAll(): Promise<Author[]> {
-    return this.knex<Author>('authors').select('*');
+  async findAll(): Promise<AuthorEntity[]> {
+    return this.knex<AuthorEntity>('authors').select('*');
   }
 
-  async findOne(id: number): Promise<Author> {
-    const author = await this.knex<Author>('authors').where({ id }).first();
+  async findOne(id: number): Promise<AuthorEntity> {
+    const author = await this.knex<AuthorEntity>('authors')
+      .where({ id })
+      .first();
     if (!author) throw new NotFoundException('Autor não encontrado');
     return author;
   }
 
-  async update(id: number, updateAuthorDto: UpdateAuthorDto): Promise<Author> {
-    const [author] = await this.knex<Author>('authors')
+  async update(
+    id: number,
+    UpdateAuthorInputDto: UpdateAuthorInputDto,
+  ): Promise<AuthorEntity> {
+    const [author] = await this.knex<AuthorEntity>('authors')
       .where({ id })
-      .update(updateAuthorDto)
+      .update(UpdateAuthorInputDto)
       .returning('*');
 
     if (!author) {
@@ -60,8 +67,8 @@ export class AuthorService {
     await this.knex('authors').where({ id }).del();
   }
 
-  async searchByName(name: string): Promise<Author[]> {
-    return this.knex<Author>('authors')
+  async searchByName(name: string): Promise<AuthorEntity[]> {
+    return this.knex<AuthorEntity>('authors')
       .whereRaw('LOWER(name) LIKE ?', [`%${name.toLowerCase()}%`])
       .select('*');
   }

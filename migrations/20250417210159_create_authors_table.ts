@@ -5,7 +5,7 @@ export async function up(knex: Knex): Promise<void> {
     table.increments('id').primary();
     table.string('name').notNullable();
     table.string('gender');
-    table.string('birth_date').notNullable();
+    table.integer('birth_year').notNullable();
     table.string('cpf').notNullable().unique();
     table.timestamps(true, true);
   });
