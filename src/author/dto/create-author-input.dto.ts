@@ -1,19 +1,21 @@
 import {
+  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
   Length,
 } from 'class-validator';
+import { GenderEnum } from 'src/Enums/gender.enum';
 
-export class CreateAuthorDto {
+export class CreateAuthorInputDto {
   @IsNotEmpty()
   @IsString()
   name: string;
 
   @IsOptional()
-  @IsString()
-  gender?: string;
+  @IsEnum(GenderEnum, { message: 'Gender must be male, female or other' })
+  gender?: GenderEnum;
 
   @IsNotEmpty()
   @IsNumber()

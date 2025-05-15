@@ -3,7 +3,12 @@ import { Knex, knex } from 'knex';
 import config from '../../knexfile';
 import { CreateBookDto } from './dto/create-book.dto';
 import { BadRequestException } from '@nestjs/common';
-import { Author, Book, AuthorBook, RentalBook } from '../interfaces';
+import {
+  BookEntity,
+  AuthorBook,
+  RentalBook,
+  AuthorEntity,
+} from '../interfaces';
 
 describe('BookService (Integration)', () => {
   let db: Knex;
@@ -36,7 +41,7 @@ describe('BookService (Integration)', () => {
 
   describe('create()', () => {
     it('should create book with valid authors', async () => {
-      const authors: Omit<Author, 'created_at' | 'updated_at'>[] = [
+      const authors: Omit<AuthorEntity, 'created_at' | 'updated_at'>[] = [
         {
           id: 1,
           name: 'Author 1',
@@ -52,7 +57,7 @@ describe('BookService (Integration)', () => {
         },
       ];
 
-      await db<Author>('authors').insert(authors);
+      await db<AuthorEntity>('authors').insert(authors);
 
       const dto: CreateBookDto = {
         name: 'Domain-Driven Design',
@@ -63,7 +68,7 @@ describe('BookService (Integration)', () => {
 
       await service.create(dto);
 
-      const books = await db<Book>('books').where({ isbn: dto.isbn });
+      const books = await db<BookEntity>('books').where({ isbn: dto.isbn });
       expect(books).toHaveLength(1);
 
       const authorBooks = await db<AuthorBook>('author_books').where({
@@ -98,7 +103,7 @@ describe('BookService (Integration)', () => {
         })
         .returning('*');
 
-      await db<Book>('books').insert({
+      await db<BookEntity>('books').insert({
         id: bookId,
         title: 'Clean Architecture',
         isbn: '978-0134494166',
@@ -125,14 +130,14 @@ describe('BookService (Integration)', () => {
     it('should delete book with associations', async () => {
       const bookId = '22222222-2222-2222-2222-222222222222';
 
-      await db<Author>('authors').insert({
+      await db<AuthorEntity>('authors').insert({
         id: 3,
         name: 'Existing Author',
         cpf: '444.444.444-44',
         birth_date: '2000-01-01',
       });
 
-      await db<Book>('books').insert({
+      await db<BookEntity>('books').insert({
         id: bookId,
         title: 'Refactoring',
         isbn: '978-0201485677',
@@ -146,7 +151,9 @@ describe('BookService (Integration)', () => {
 
       await service.remove(bookId);
 
-      const exists = await db<Book>('books').where({ id: bookId }).first();
+      const exists = await db<BookEntity>('books')
+        .where({ id: bookId })
+        .first();
       expect(exists).toBeUndefined();
     });
   });
@@ -165,14 +172,14 @@ describe('BookService (Integration)', () => {
         })
         .returning('*');
 
-      await db<Book>('books').insert({
+      await db<BookEntity>('books').insert({
         id: availableId,
         title: 'Available Book',
         isbn: '111-111',
         published_at: '2024-01-01',
       });
 
-      await db<Book>('books').insert({
+      await db<BookEntity>('books').insert({
         id: rentedId,
         title: 'Rented Book',
         isbn: '222-222',

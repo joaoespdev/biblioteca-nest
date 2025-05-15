@@ -9,34 +9,40 @@ import {
   Query,
 } from '@nestjs/common';
 import { AuthorService } from './author.service';
-import { CreateAuthorDto } from './dto/create-author.dto';
-import { UpdateAuthorDto } from './dto/update-author.dto';
+import { CreateAuthorInputDto } from './dto/create-author-input.dto';
+import { UpdateAuthorInputDto } from './dto/update-author-input.dto';
+import { TransformPlainToInstance } from 'class-transformer';
+import { AuthorOutputDto } from './dto/author-output.dto';
 
 @Controller('authors')
 export class AuthorController {
   constructor(private readonly authorService: AuthorService) {}
 
   @Post()
-  async create(@Body() createAuthorDto: CreateAuthorDto) {
-    return this.authorService.create(createAuthorDto);
+  @TransformPlainToInstance(CreateAuthorInputDto)
+  async create(@Body() CreateAuthorInputDto: CreateAuthorInputDto) {
+    return this.authorService.create(CreateAuthorInputDto);
   }
 
   @Get()
+  @TransformPlainToInstance(AuthorOutputDto)
   async findAll() {
     return this.authorService.findAll();
   }
 
   @Get(':id')
+  @TransformPlainToInstance(AuthorOutputDto)
   async findOne(@Param('id') id: string) {
     return this.authorService.findOne(Number(id));
   }
 
   @Put(':id')
+  @TransformPlainToInstance(AuthorOutputDto)
   async update(
     @Param('id') id: string,
-    @Body() updateAuthorDto: UpdateAuthorDto,
+    @Body() UpdateAuthorInputDto: UpdateAuthorInputDto,
   ) {
-    return this.authorService.update(Number(id), updateAuthorDto);
+    return this.authorService.update(Number(id), UpdateAuthorInputDto);
   }
 
   @Delete(':id')

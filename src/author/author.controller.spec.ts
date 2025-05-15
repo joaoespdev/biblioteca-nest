@@ -1,15 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthorController } from './author.controller';
 import { AuthorService } from './author.service';
-import { CreateAuthorDto } from './dto/create-author.dto';
-import { UpdateAuthorDto } from './dto/update-author.dto';
+import { CreateAuthorInputDto } from './dto/create-author-input.dto';
+import { UpdateAuthorInputDto } from './dto/update-author-input.dto';
 import { NotFoundException, BadRequestException } from '@nestjs/common';
 
 describe('AuthorController', () => {
   let authorController: AuthorController;
   let authorService: AuthorService;
 
-  // Mocking the AuthorService methods
   const mockAuthorService = {
     create: jest.fn(),
     findAll: jest.fn(),
@@ -40,18 +39,22 @@ describe('AuthorController', () => {
 
   describe('create', () => {
     it('should create a new author', async () => {
-      const createAuthorDto: CreateAuthorDto = {
+      const CreateAuthorInputDto: CreateAuthorInputDto = {
         name: 'João Silva',
-        gender: 'Male',
+        gender: 'male',
         birthYear: 1985,
         cpf: '12345678901',
       };
-      const result = { id: 1, ...createAuthorDto };
+      const result = { id: 1, ...CreateAuthorInputDto };
 
       mockAuthorService.create.mockResolvedValue(result);
 
-      expect(await authorController.create(createAuthorDto)).toEqual(result);
-      expect(mockAuthorService.create).toHaveBeenCalledWith(createAuthorDto);
+      expect(await authorController.create(CreateAuthorInputDto)).toEqual(
+        result,
+      );
+      expect(mockAuthorService.create).toHaveBeenCalledWith(
+        CreateAuthorInputDto,
+      );
     });
   });
 
@@ -61,7 +64,7 @@ describe('AuthorController', () => {
         {
           id: 1,
           name: 'João Silva',
-          gender: 'Male',
+          gender: 'male',
           birthYear: 1985,
           cpf: '12345678901',
         },
@@ -79,7 +82,7 @@ describe('AuthorController', () => {
       const result = {
         id: 1,
         name: 'João Silva',
-        gender: 'Male',
+        gender: 'male',
         birthYear: 1985,
         cpf: '12345678901',
       };
@@ -106,30 +109,33 @@ describe('AuthorController', () => {
 
   describe('update', () => {
     it('should update an author', async () => {
-      const updateAuthorDto: UpdateAuthorDto = {
+      const UpdateAuthorInputDto: UpdateAuthorInputDto = {
         name: 'João Silva Updated',
-        gender: 'Male',
+        gender: 'male',
         birthYear: 1985,
         cpf: '12345678901',
       };
-      const result = { id: 1, ...updateAuthorDto };
+      const result = { id: 1, ...UpdateAuthorInputDto };
 
       mockAuthorService.update.mockResolvedValue(result);
 
-      expect(await authorController.update('1', updateAuthorDto)).toEqual(
+      expect(await authorController.update('1', UpdateAuthorInputDto)).toEqual(
         result,
       );
-      expect(mockAuthorService.update).toHaveBeenCalledWith(1, updateAuthorDto);
+      expect(mockAuthorService.update).toHaveBeenCalledWith(
+        1,
+        UpdateAuthorInputDto,
+      );
     });
 
     it('should throw an error if author not found', async () => {
-      const updateAuthorDto: UpdateAuthorDto = { name: 'Updated' };
+      const UpdateAuthorInputDto: UpdateAuthorInputDto = { name: 'Updated' };
       mockAuthorService.update.mockRejectedValue(
         new NotFoundException('Author not found'),
       );
 
       try {
-        await authorController.update('999', updateAuthorDto);
+        await authorController.update('999', UpdateAuthorInputDto);
       } catch (error) {
         expect(error).toBeInstanceOf(NotFoundException);
         expect(error.message).toBe('Author not found');
@@ -165,7 +171,7 @@ describe('AuthorController', () => {
         {
           id: 1,
           name: 'João Silva',
-          gender: 'Male',
+          gender: 'male',
           birthYear: 1985,
           cpf: '12345678901',
         },
