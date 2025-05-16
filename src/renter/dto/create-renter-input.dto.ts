@@ -1,21 +1,23 @@
 import {
   IsDateString,
   IsEmail,
+  IsEnum,
   IsNotEmpty,
   IsOptional,
   IsString,
   Length,
   Matches,
 } from 'class-validator';
+import { GenderEnum } from 'src/Enums/gender.enum';
 
-export class CreateRenterDto {
+export class CreateRenterInputDto {
   @IsNotEmpty()
   @IsString()
   name: string;
 
   @IsOptional()
-  @IsString()
-  gender?: string;
+  @IsEnum(GenderEnum, { message: 'Gender must be male, female or other' })
+  gender?: GenderEnum;
 
   @IsNotEmpty()
   @Matches(/^(\d{9}|\d{11})$/, {

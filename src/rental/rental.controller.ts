@@ -9,15 +9,15 @@ import {
   ParseIntPipe,
 } from '@nestjs/common';
 import { RentalService } from './rental.service';
-import { CreateRentalDto } from './dto/create-rental.dto';
-import { UpdateRentalDto } from './dto/update-rental.dto';
+import { CreateRentalInputDto } from './dto/create-rental-input.dto';
+import { UpdateRentalInputDto } from './dto/update-rental-input.dto';
 
 @Controller('rentals')
 export class RentalController {
   constructor(private readonly rentalService: RentalService) {}
 
   @Post()
-  create(@Body() createRentalDto: CreateRentalDto) {
+  create(@Body() createRentalDto: CreateRentalInputDto) {
     return this.rentalService.create(createRentalDto);
   }
 
@@ -34,7 +34,7 @@ export class RentalController {
   @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateRentalDto: UpdateRentalDto,
+    @Body() updateRentalDto: UpdateRentalInputDto,
   ) {
     return this.rentalService.update(id, updateRentalDto);
   }

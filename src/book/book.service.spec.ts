@@ -1,7 +1,7 @@
 import { BookService } from './book.service';
 import { Knex, knex } from 'knex';
 import config from '../../knexfile';
-import { CreateBookDto } from './dto/create-book.dto';
+import { CreateBookInputDto } from './dto/create-book-input.dto';
 import { BadRequestException } from '@nestjs/common';
 import {
   BookEntity,
@@ -59,7 +59,7 @@ describe('BookService (Integration)', () => {
 
       await db<AuthorEntity>('authors').insert(authors);
 
-      const dto: CreateBookDto = {
+      const dto: CreateBookInputDto = {
         name: 'Domain-Driven Design',
         isbn: '978-0321125217',
         publicationDate: '2024-01-01',
@@ -79,7 +79,7 @@ describe('BookService (Integration)', () => {
     });
 
     it('should fail with invalid authors', async () => {
-      const dto: CreateBookDto = {
+      const dto: CreateBookInputDto = {
         name: 'Invalid Book',
         isbn: '000-0000',
         publicationDate: '2024-01-01',

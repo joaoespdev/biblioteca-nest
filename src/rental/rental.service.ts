@@ -5,14 +5,14 @@ import {
 } from '@nestjs/common';
 import { InjectConnection } from 'nest-knexjs';
 import { Knex } from 'knex';
-import { CreateRentalDto } from './dto/create-rental.dto';
-import { UpdateRentalDto } from './dto/update-rental.dto';
+import { CreateRentalInputDto } from './dto/create-rental-input.dto';
+import { UpdateRentalInputDto } from './dto/update-rental-input.dto';
 
 @Injectable()
 export class RentalService {
   constructor(@InjectConnection() private readonly knex: Knex) {}
 
-  async create(createRentalDto: CreateRentalDto) {
+  async create(createRentalDto: CreateRentalInputDto) {
     const renter = await this.knex('renters')
       .where({ id: createRentalDto.renterId })
       .first();
@@ -64,7 +64,7 @@ export class RentalService {
     return rental;
   }
 
-  async update(id: number, updateRentalDto: UpdateRentalDto) {
+  async update(id: number, updateRentalDto: UpdateRentalInputDto) {
     const [rental] = await this.knex('rentals')
       .where({ id })
       .update({

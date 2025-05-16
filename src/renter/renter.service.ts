@@ -5,14 +5,14 @@ import {
 } from '@nestjs/common';
 import { Knex } from 'knex';
 import { InjectConnection } from 'nest-knexjs';
-import { CreateRenterDto } from './dto/create-renter.dto';
-import { UpdateRenterDto } from './dto/update-renter.dto';
+import { CreateRenterInputDto } from './dto/create-renter-input.dto';
+import { UpdateRenterInputDto } from './dto/update-renter-input.dto';
 
 @Injectable()
 export class RenterService {
   constructor(@InjectConnection() private readonly knex: Knex) {}
 
-  async create(createRenterDto: CreateRenterDto) {
+  async create(createRenterDto: CreateRenterInputDto) {
     const [renter] = await this.knex('renters')
       .insert({
         name: createRenterDto.name,
@@ -39,7 +39,7 @@ export class RenterService {
     return renter;
   }
 
-  async update(id: number, updateRenterDto: UpdateRenterDto) {
+  async update(id: number, updateRenterDto: UpdateRenterInputDto) {
     const [renter] = await this.knex('renters')
       .where({ id })
       .update({
@@ -78,9 +78,20 @@ export class RenterService {
     return { deleted: true };
   }
 
-  async findRentalsByRenter(id: number) {
-    await this.findOne(id);
-
-    await this.knex('rentals').where({ renter_id: id }).select('*');
+  async findRentalsByRenter(renterId: number) {
+    const rentals = await this.knex('rentals').where({ renter_id: renterId });
+    return Promise.all(
+      rentals.map(async (rental) => {
+        const books = await this.knex('rental_books')
+          .where({ rental_id: rental.id })
+          .select('book_id');
+        return {
+          rentDate: rental.rented_at,
+          returnDate: rental.returned_at,
+          renterId: rental.renter_id,
+          bookIds: books.map((b) => b.book_id),
+        };
+      }),
+    );
   }
 }

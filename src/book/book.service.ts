@@ -5,14 +5,14 @@ import {
 } from '@nestjs/common';
 import { InjectConnection } from 'nest-knexjs';
 import { Knex } from 'knex';
-import { CreateBookDto } from './dto/create-book.dto';
-import { UpdateBookDto } from './dto/update-book.dto';
+import { CreateBookInputDto } from './dto/create-book-input.dto';
+import { UpdateBookInputDto } from './dto/update-book-input.dto';
 
 @Injectable()
 export class BookService {
   constructor(@InjectConnection() private readonly knex: Knex) {}
 
-  async create(createBookDto: CreateBookDto) {
+  async create(createBookDto: CreateBookInputDto) {
     if (createBookDto.authorIds.length === 0) {
       throw new BadRequestException('At least one author is required');
     }
@@ -47,7 +47,7 @@ export class BookService {
     return this.knex('books').select('*');
   }
 
-  async findOne(id: string) {
+  async findOne(id: number) {
     const book = await this.knex('books').where({ id }).first();
     if (!book) {
       throw new NotFoundException('Book not found');
@@ -55,7 +55,7 @@ export class BookService {
     return book;
   }
 
-  async update(id: string, updateBookDto: UpdateBookDto) {
+  async update(id: number, updateBookDto: UpdateBookInputDto) {
     const [book] = await this.knex('books')
       .where({ id })
       .update({
@@ -83,7 +83,7 @@ export class BookService {
     return book;
   }
 
-  async remove(id: string) {
+  async remove(id: number) {
     const rental = await this.knex('rental_books')
       .where({ book_id: id })
       .first();

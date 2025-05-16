@@ -9,32 +9,39 @@ import {
   ParseIntPipe,
 } from '@nestjs/common';
 import { RenterService } from './renter.service';
-import { CreateRenterDto } from './dto/create-renter.dto';
-import { UpdateRenterDto } from './dto/update-renter.dto';
+import { CreateRenterInputDto } from './dto/create-renter-input.dto';
+import { UpdateRenterInputDto } from './dto/update-renter-input.dto';
+import { TransformPlainToInstance } from 'class-transformer';
+import { RenterOutputDto } from './dto/renter-output.dto';
+import { RentalOutputDto } from 'src/rental/dto/rental-output.dto';
 
 @Controller('renters')
 export class RenterController {
   constructor(private readonly renterService: RenterService) {}
 
   @Post()
-  create(@Body() createRenterDto: CreateRenterDto) {
+  @TransformPlainToInstance(CreateRenterInputDto)
+  create(@Body() createRenterDto: CreateRenterInputDto) {
     return this.renterService.create(createRenterDto);
   }
 
   @Get()
+  @TransformPlainToInstance(RenterOutputDto)
   findAll() {
     return this.renterService.findAll();
   }
 
   @Get(':id')
+  @TransformPlainToInstance(RenterOutputDto)
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.renterService.findOne(id);
   }
 
   @Put(':id')
+  @TransformPlainToInstance(RenterOutputDto)
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateRenterDto: UpdateRenterDto,
+    @Body() updateRenterDto: UpdateRenterInputDto,
   ) {
     return this.renterService.update(id, updateRenterDto);
   }
@@ -45,6 +52,7 @@ export class RenterController {
   }
 
   @Get(':id/rentals')
+  @TransformPlainToInstance(RentalOutputDto)
   findRentalsByRenter(@Param('id', ParseIntPipe) id: number) {
     return this.renterService.findRentalsByRenter(id);
   }

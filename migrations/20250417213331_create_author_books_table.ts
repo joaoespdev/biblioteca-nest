@@ -10,7 +10,7 @@ export async function up(knex: Knex): Promise<void> {
       .inTable('authors')
       .onDelete('CASCADE');
     table
-      .uuid('book_id')
+      .integer('book_id')
       .unsigned()
       .references('id')
       .inTable('books')

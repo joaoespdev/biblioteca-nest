@@ -1,12 +1,11 @@
 import {
-  IsArray,
   IsDateString,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
-  IsUUID,
 } from 'class-validator';
 
-export class CreateRentalDto {
+export class CreateRentalInputDto {
   @IsNotEmpty()
   @IsDateString()
   rentDate: string;
@@ -19,7 +18,6 @@ export class CreateRentalDto {
   renterId: number;
 
   @IsNotEmpty()
-  @IsArray()
-  @IsUUID(undefined, { each: true })
-  bookIds: string[];
+  @IsNumber({}, { each: true })
+  bookIds: number[];
 }

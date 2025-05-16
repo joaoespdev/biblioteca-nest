@@ -1,4 +1,4 @@
-export interface Rental {
+export interface RentalEntity {
   id: number;
   rented_at: string;
   due_date: string;

@@ -6,7 +6,7 @@ import {
   IsString,
 } from 'class-validator';
 
-export class CreateBookDto {
+export class CreateBookInputDto {
   @IsNotEmpty()
   @IsString()
   name: string;
