@@ -7,6 +7,7 @@ import {
   Put,
   Delete,
   Query,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { AuthorService } from './author.service';
 import { CreateAuthorInputDto } from './dto/create-author-input.dto';
@@ -32,22 +33,22 @@ export class AuthorController {
 
   @Get(':id')
   @TransformPlainToInstance(AuthorOutputDto)
-  async findOne(@Param('id') id: string) {
-    return this.authorService.findOne(Number(id));
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.authorService.findOne(id);
   }
 
   @Put(':id')
   @TransformPlainToInstance(AuthorOutputDto)
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() UpdateAuthorInputDto: UpdateAuthorInputDto,
   ) {
-    return this.authorService.update(Number(id), UpdateAuthorInputDto);
+    return this.authorService.update(id, UpdateAuthorInputDto);
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    return this.authorService.remove(Number(id));
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    return this.authorService.remove(id);
   }
 
   @Get('search/by-name')

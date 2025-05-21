@@ -47,7 +47,7 @@ describe('BookService (Integration)', () => {
           name: 'Author 1',
           cpf: '111.111.111-11',
           birth_date: '1980-01-01',
-          gender: 'M',
+          gender: 'male',
         },
         {
           id: 2,

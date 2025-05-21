@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer';
 import {
   IsEnum,
   IsNotEmpty,
@@ -9,6 +10,11 @@ import {
 import { GenderEnum } from 'src/Enums/gender.enum';
 
 export class CreateAuthorInputDto {
+  @IsNotEmpty()
+  @IsNumber({}, { message: 'Id must be a number' })
+  @Type(() => Number)
+  id: number;
+
   @IsNotEmpty()
   @IsString()
   name: string;
