@@ -11,11 +11,6 @@ import { GenderEnum } from 'src/Enums/gender.enum';
 
 export class CreateAuthorInputDto {
   @IsNotEmpty()
-  @IsNumber({}, { message: 'Id must be a number' })
-  @Type(() => Number)
-  id: number;
-
-  @IsNotEmpty()
   @IsString()
   name: string;
 
@@ -27,7 +22,7 @@ export class CreateAuthorInputDto {
   @IsNumber()
   birthYear: number;
 
-  @IsNotEmpty()
+  @IsString({ message: 'CPF must be a string' })
   @Length(11, 14, { message: 'CPF must be between 11 and 14 characters' })
   cpf: string;
 }

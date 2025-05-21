@@ -16,15 +16,23 @@ export class AuthorService {
   async create(
     CreateAuthorInputDto: CreateAuthorInputDto,
   ): Promise<AuthorEntity> {
-    const [author] = await this.knex<AuthorEntity>('authors')
-      .insert({
-        name: CreateAuthorInputDto.name,
-        gender: CreateAuthorInputDto.gender,
-        birthYear: CreateAuthorInputDto.birthYear,
-        cpf: CreateAuthorInputDto.cpf,
-      })
-      .returning('*');
-    return author;
+    try {
+      const [author] = await this.knex<AuthorEntity>('authors')
+        .insert({
+          name: CreateAuthorInputDto.name,
+          gender: CreateAuthorInputDto.gender,
+          birthYear: CreateAuthorInputDto.birthYear,
+          cpf: CreateAuthorInputDto.cpf,
+        })
+        .returning('*');
+      return author;
+    } catch (error) {
+      // Postgres: código '23505' = unique_violation
+      if (error.code === '23505' && error.detail?.includes('cpf')) {
+        throw new BadRequestException('CPF já cadastrado');
+      }
+      throw error;
+    }
   }
 
   async findAll(): Promise<AuthorEntity[]> {
