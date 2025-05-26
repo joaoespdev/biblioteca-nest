@@ -3,32 +3,21 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Knex } from 'knex';
 import { CreateAuthorInputDto } from './dto/create-author-input.dto.js';
 import { UpdateAuthorInputDto } from './dto/update-author-input.dto.js';
 import { AuthorEntity } from 'src/author/entity/author.entity.js';
-import { InjectConnection } from 'nest-knexjs';
+import { AuthorRepository } from './author.repository';
 
 @Injectable()
 export class AuthorService {
-  constructor(@InjectConnection() private readonly knex: Knex) {}
+  constructor(private readonly authorRepository: AuthorRepository) {}
 
-  async create(
-    CreateAuthorInputDto: CreateAuthorInputDto,
-  ): Promise<AuthorEntity> {
+  async create(dto: CreateAuthorInputDto): Promise<AuthorEntity> {
     try {
-      const [author] = await this.knex<AuthorEntity>('authors')
-        .insert({
-          name: CreateAuthorInputDto.name,
-          gender: CreateAuthorInputDto.gender,
-          birthYear: CreateAuthorInputDto.birthYear,
-          cpf: CreateAuthorInputDto.cpf,
-        })
-        .returning('*');
-      return author;
-    } catch (error) {
-      // Postgres: código '23505' = unique_violation
-      if (error.code === '23505' && error.detail?.includes('cpf')) {
+      return await this.authorRepository.insert(dto);
+    } catch (error: unknown) {
+      const pgError = error as { code?: string; detail?: string };
+      if (pgError.code === '23505' && pgError.detail?.includes('cpf')) {
         throw new BadRequestException('CPF já cadastrado');
       }
       throw error;
@@ -36,48 +25,29 @@ export class AuthorService {
   }
 
   async findAll(): Promise<AuthorEntity[]> {
-    return this.knex<AuthorEntity>('authors').select('*');
+    return this.authorRepository.findAll();
   }
 
   async findOne(id: number): Promise<AuthorEntity> {
-    const author = await this.knex<AuthorEntity>('authors')
-      .where({ id })
-      .first();
+    const author = await this.authorRepository.findById(id);
     if (!author) throw new NotFoundException('Autor não encontrado');
     return author;
   }
 
-  async update(
-    id: number,
-    UpdateAuthorInputDto: UpdateAuthorInputDto,
-  ): Promise<AuthorEntity> {
-    const [author] = await this.knex<AuthorEntity>('authors')
-      .where({ id })
-      .update(UpdateAuthorInputDto)
-      .returning('*');
-
-    if (!author) {
-      throw new NotFoundException('Autor não encontrado');
-    }
-
+  async update(id: number, dto: UpdateAuthorInputDto): Promise<AuthorEntity> {
+    const author = await this.authorRepository.update(id, dto);
+    if (!author) throw new NotFoundException('Autor não encontrado');
     return author;
   }
 
   async remove(id: number): Promise<void> {
-    const hasBooks = await this.knex('author_books')
-      .where({ author_id: id })
-      .first();
-
-    if (hasBooks) {
+    if (await this.authorRepository.hasBook(id)) {
       throw new BadRequestException('Autor possui livros associados');
     }
-
-    await this.knex('authors').where({ id }).del();
+    await this.authorRepository.delete(id);
   }
 
   async searchByName(name: string): Promise<AuthorEntity[]> {
-    return this.knex<AuthorEntity>('authors')
-      .whereRaw('LOWER(name) LIKE ?', [`%${name.toLowerCase()}%`])
-      .select('*');
+    return this.authorRepository.searchByName(name);
   }
 }

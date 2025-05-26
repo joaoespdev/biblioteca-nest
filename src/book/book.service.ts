@@ -1,117 +1,75 @@
 import {
-  BadRequestException,
   Injectable,
+  BadRequestException,
   NotFoundException,
 } from '@nestjs/common';
-import { InjectConnection } from 'nest-knexjs';
-import { Knex } from 'knex';
+import { BookRepository } from './book.repository';
 import { CreateBookInputDto } from './dto/create-book-input.dto';
 import { UpdateBookInputDto } from './dto/update-book-input.dto';
 
 @Injectable()
 export class BookService {
-  constructor(@InjectConnection() private readonly knex: Knex) {}
+  constructor(private readonly bookRepository: BookRepository) {}
 
   async create(createBookDto: CreateBookInputDto) {
     if (createBookDto.authorIds.length === 0) {
       throw new BadRequestException('At least one author is required');
     }
 
-    const trx = await this.knex.transaction();
+    // Use transação se necessário, mas delegue inserts ao repositório
+    const book = await this.bookRepository.insert({
+      title: createBookDto.name,
+      isbn: createBookDto.isbn,
+      published_at: createBookDto.publicationDate,
+    });
 
-    try {
-      const [book] = await trx('books')
-        .insert({
-          title: createBookDto.name,
-          isbn: createBookDto.isbn,
-          published_at: createBookDto.publicationDate,
-        })
-        .returning('*');
+    await this.bookRepository.insertAuthors(book.id, createBookDto.authorIds);
 
-      const bookAuthors = createBookDto.authorIds.map((authorId) => ({
-        book_id: book.id,
-        author_id: authorId,
-      }));
-
-      await trx('author_books').insert(bookAuthors);
-
-      await trx.commit();
-      return book;
-    } catch (error) {
-      await trx.rollback();
-      throw new BadRequestException('Failed to create book');
-    }
+    return book;
   }
 
   async findAll() {
-    return this.knex('books').select('*');
+    return this.bookRepository.findAll();
   }
 
   async findOne(id: number) {
-    const book = await this.knex('books').where({ id }).first();
-    if (!book) {
-      throw new NotFoundException('Book not found');
-    }
+    const book = await this.bookRepository.findById(id);
+    if (!book) throw new NotFoundException('Book not found');
     return book;
   }
 
   async update(id: number, updateBookDto: UpdateBookInputDto) {
-    const [book] = await this.knex('books')
-      .where({ id })
-      .update({
-        title: updateBookDto.name,
-        isbn: updateBookDto.isbn,
-        published_at: updateBookDto.publicationDate,
-      })
-      .returning('*');
-
-    if (!book) {
-      throw new NotFoundException('Book not found');
-    }
+    const book = await this.bookRepository.update(id, {
+      title: updateBookDto.name,
+      isbn: updateBookDto.isbn,
+      published_at: updateBookDto.publicationDate,
+    });
+    if (!book) throw new NotFoundException('Book not found');
 
     if (updateBookDto.authorIds && updateBookDto.authorIds.length > 0) {
-      await this.knex('author_books').where({ book_id: id }).del();
-
-      const bookAuthors = updateBookDto.authorIds.map((authorId) => ({
-        book_id: id,
-        author_id: authorId,
-      }));
-
-      await this.knex('author_books').insert(bookAuthors);
+      await this.bookRepository.removeAuthors(id);
+      await this.bookRepository.insertAuthors(id, updateBookDto.authorIds);
     }
 
     return book;
   }
 
   async remove(id: number) {
-    const rental = await this.knex('rental_books')
-      .where({ book_id: id })
-      .first();
-
-    if (rental) {
+    if (await this.bookRepository.hasRental(id)) {
       throw new BadRequestException(
         'Book cannot be deleted because it has rentals',
       );
     }
-
-    await this.knex('author_books').where({ book_id: id }).del();
-    const deleted = await this.knex('books').where({ id }).del();
-
-    if (!deleted) {
-      throw new NotFoundException('Book not found');
-    }
+    await this.bookRepository.removeAuthors(id);
+    const deleted = await this.bookRepository.delete(id);
+    if (!deleted) throw new NotFoundException('Book not found');
   }
 
   async findAvailableBooks() {
-    const rentedBookIds = this.knex('rental_books').select('book_id');
-
-    return this.knex('books').whereNotIn('id', rentedBookIds).select('*');
+    return this.bookRepository.findAvailableBooks();
   }
 
   async findRentedBooks() {
-    return this.knex('books')
-      .join('rental_books', 'books.id', 'rental_books.book_id')
-      .select('books.*')
-      .distinct();
+    return this.bookRepository.findRentedBooks();
   }
 }
