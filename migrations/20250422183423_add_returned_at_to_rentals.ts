@@ -2,12 +2,12 @@ import { Knex } from 'knex';
 
 export async function up(knex: Knex): Promise<void> {
   return knex.schema.table('rentals', (table) => {
-    table.date('returned_at');
+    table.date('returnedAt');
   });
 }
 
 export async function down(knex: Knex): Promise<void> {
   return knex.schema.table('rentals', (table) => {
-    table.dropColumn('returned_at');
+    table.dropColumn('returnedAt');
   });
 }

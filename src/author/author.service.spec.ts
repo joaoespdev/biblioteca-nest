@@ -38,7 +38,7 @@ describe('AuthorService', () => {
       name: dto.name,
       gender: dto.gender,
       cpf: dto.cpf,
-      birth_date: '1980-01-01T00:00:00.000Z',
+      birthDate: '1980-01-01T00:00:00.000Z',
     };
 
     mockKnexQueryBuilder.returning.mockReturnValueOnce([expectedAuthor]);
@@ -95,7 +95,7 @@ describe('AuthorService', () => {
   });
 
   it('should throw BadRequestException if author has books', async () => {
-    mockKnexQueryBuilder.first.mockResolvedValueOnce({ book_id: 1 });
+    mockKnexQueryBuilder.first.mockResolvedValueOnce({ bookId: 1 });
 
     await expect(service.remove(1)).rejects.toThrow(BadRequestException);
   });

@@ -39,25 +39,25 @@ export class BookRepository {
 
   async hasRental(id: number): Promise<boolean> {
     const rental = (await this.knex('rental_books')
-      .where({ book_id: id })
+      .where({ bookId: id })
       .first()) as { id: number } | undefined;
     return !!rental;
   }
 
   async removeAuthors(bookId: number): Promise<void> {
-    await this.knex('author_books').where({ book_id: bookId }).del();
+    await this.knex('author_books').where({ bookId: bookId }).del();
   }
 
   async insertAuthors(bookId: number, authorIds: number[]): Promise<void> {
     const bookAuthors = authorIds.map((authorId) => ({
-      book_id: bookId,
-      author_id: authorId,
+      bookId: bookId,
+      authorId: authorId,
     }));
     await this.knex('author_books').insert(bookAuthors);
   }
 
   async findAvailableBooks(): Promise<BookEntity[]> {
-    const rentedBookIds = this.knex('rental_books').select('book_id');
+    const rentedBookIds = this.knex('rental_books').select('bookId');
     return this.knex<BookEntity>('books')
       .whereNotIn('id', rentedBookIds)
       .select('*');
@@ -65,7 +65,7 @@ export class BookRepository {
 
   async findRentedBooks(): Promise<BookEntity[]> {
     return this.knex<BookEntity>('books')
-      .join('rental_books', 'books.id', 'rental_books.book_id')
+      .join('rental_books', 'books.id', 'rental_books.bookId')
       .select('books.*')
       .distinct();
   }

@@ -20,4 +20,10 @@ export class RenterOutputDto {
 
   @Expose()
   cpf: string;
+
+  @Expose({ name: 'created_at' })
+  createdAt: string;
+
+  @Expose({ name: 'updated_at' })
+  updatedAt: string;
 }

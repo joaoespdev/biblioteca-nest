@@ -5,7 +5,7 @@ export async function up(knex: Knex): Promise<void> {
     table.increments('id').primary();
     table.string('title').notNullable();
     table.string('isbn').notNullable();
-    table.date('published_at').notNullable();
+    table.date('publishedAt').notNullable();
     table.timestamps(true, true);
   });
 }

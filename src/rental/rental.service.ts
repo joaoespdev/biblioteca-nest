@@ -24,9 +24,9 @@ export class RentalService {
 
     // Se quiser usar transação, pode passar o trx para o repository
     const rental = await this.rentalRepository.insert({
-      rented_at: createRentalDto.rentDate,
-      returned_at: createRentalDto.returnDate || undefined,
-      renter_id: createRentalDto.renterId,
+      rentedAt: createRentalDto.rentDate,
+      returnedAt: createRentalDto.returnDate || undefined,
+      renterId: createRentalDto.renterId,
     });
 
     await this.rentalRepository.insertRentalBooks(
@@ -51,9 +51,9 @@ export class RentalService {
 
   async update(id: number, updateRentalDto: UpdateRentalInputDto) {
     const rental = await this.rentalRepository.update(id, {
-      rented_at: updateRentalDto.rentDate,
-      returned_at: updateRentalDto.returnDate,
-      renter_id: updateRentalDto.renterId,
+      rentedAt: updateRentalDto.rentDate,
+      returnedAt: updateRentalDto.returnDate,
+      renterId: updateRentalDto.renterId,
     });
     if (!rental) {
       throw new NotFoundException('Rental not found');

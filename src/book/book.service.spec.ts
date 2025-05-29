@@ -41,19 +41,19 @@ describe('BookService (Integration)', () => {
 
   describe('create()', () => {
     it('should create book with valid authors', async () => {
-      const authors: Omit<AuthorEntity, 'created_at' | 'updated_at'>[] = [
+      const authors: Omit<AuthorEntity, 'createdAt' | 'updatedAt'>[] = [
         {
           id: 1,
           name: 'Author 1',
           cpf: '111.111.111-11',
-          birth_date: '1980-01-01',
+          birthDate: '1980-01-01',
           gender: 'male',
         },
         {
           id: 2,
           name: 'Author 2',
           cpf: '222.222.222-22',
-          birth_date: '1990-01-01',
+          birthDate: '1990-01-01',
         },
       ];
 
@@ -72,7 +72,7 @@ describe('BookService (Integration)', () => {
       expect(books).toHaveLength(1);
 
       const authorBooks = await db<AuthorBook>('author_books').where({
-        book_id: books[0].id,
+        bookId: books[0].id,
       });
 
       expect(authorBooks).toHaveLength(2);
@@ -99,7 +99,7 @@ describe('BookService (Integration)', () => {
           name: 'John Doe',
           email: 'john@example.com',
           cpf: '333.333.333-33',
-          birth_date: '2000-01-01',
+          birthDate: '2000-01-01',
         })
         .returning('*');
 
@@ -107,19 +107,19 @@ describe('BookService (Integration)', () => {
         id: bookId,
         title: 'Clean Architecture',
         isbn: '978-0134494166',
-        published_at: '2024-01-01',
+        publishedAt: '2024-01-01',
       });
 
       const [rental] = await db('rentals')
         .insert({
-          renter_id: renter.id,
-          due_date: db.raw("CURRENT_DATE + INTERVAL '2 days'"),
+          renterId: renter.id,
+          dueDate: db.raw("CURRENT_DATE + INTERVAL '2 days'"),
         })
         .returning('*');
 
       await db<RentalBook>('rental_books').insert({
-        book_id: bookId,
-        rental_id: rental.id,
+        bookId: bookId,
+        rentalId: rental.id,
       });
 
       await expect(service.remove(bookId)).rejects.toThrow(
@@ -134,19 +134,19 @@ describe('BookService (Integration)', () => {
         id: 3,
         name: 'Existing Author',
         cpf: '444.444.444-44',
-        birth_date: '2000-01-01',
+        birthDate: '2000-01-01',
       });
 
       await db<BookEntity>('books').insert({
         id: bookId,
         title: 'Refactoring',
         isbn: '978-0201485677',
-        published_at: '2024-01-01',
+        publishedAt: '2024-01-01',
       });
 
       await db<AuthorBook>('author_books').insert({
-        book_id: bookId,
-        author_id: 3,
+        bookId: bookId,
+        authorId: 3,
       });
 
       await service.remove(bookId);
@@ -168,7 +168,7 @@ describe('BookService (Integration)', () => {
           name: 'Jane Doe',
           email: 'jane@example.com',
           cpf: '555.555.555-55',
-          birth_date: '1995-01-01',
+          birthDate: '1995-01-01',
         })
         .returning('*');
 
@@ -176,26 +176,26 @@ describe('BookService (Integration)', () => {
         id: availableId,
         title: 'Available Book',
         isbn: '111-111',
-        published_at: '2024-01-01',
+        publishedAt: '2024-01-01',
       });
 
       await db<BookEntity>('books').insert({
         id: rentedId,
         title: 'Rented Book',
         isbn: '222-222',
-        published_at: '2024-01-01',
+        publishedAt: '2024-01-01',
       });
 
       const [rental] = await db('rentals')
         .insert({
-          renter_id: renter.id,
-          due_date: db.raw("CURRENT_DATE + INTERVAL '2 days'"),
+          renterId: renter.id,
+          dueDate: db.raw("CURRENT_DATE + INTERVAL '2 days'"),
         })
         .returning('*');
 
       await db<RentalBook>('rental_books').insert({
-        book_id: rentedId,
-        rental_id: rental.id,
+        bookId: rentedId,
+        rentalId: rental.id,
       });
 
       const result = await service.findAvailableBooks();

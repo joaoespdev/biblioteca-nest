@@ -12,7 +12,21 @@ export class RenterService {
   constructor(private readonly renterRepository: RenterRepository) {}
 
   async create(createRenterDto: CreateRenterInputDto) {
-    return this.renterRepository.insert(createRenterDto);
+    try {
+      return await this.renterRepository.insert({
+        ...createRenterDto,
+        birthDate: new Date(createRenterDto.birthDate),
+      });
+    } catch (error: unknown) {
+      const pgError = error as { code?: string; detail?: string };
+      if (pgError.code === '23505' && pgError.detail?.includes('email')) {
+        throw new BadRequestException('E-mail já cadastrado');
+      }
+      if (pgError.code === '23505' && pgError.detail?.includes('cpf')) {
+        throw new BadRequestException('CPF já cadastrado');
+      }
+      throw error;
+    }
   }
 
   async findAll() {
@@ -26,7 +40,12 @@ export class RenterService {
   }
 
   async update(id: number, updateRenterDto: UpdateRenterInputDto) {
-    const renter = await this.renterRepository.update(id, updateRenterDto);
+    const renter = await this.renterRepository.update(id, {
+      ...updateRenterDto,
+      birthDate: updateRenterDto.birthDate
+        ? new Date(updateRenterDto.birthDate)
+        : undefined,
+    });
     if (!renter) throw new NotFoundException('Renter not found');
     return renter;
   }

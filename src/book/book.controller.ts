@@ -21,8 +21,10 @@ export class BookController {
   constructor(private readonly bookService: BookService) {}
 
   @Post()
-  @TransformPlainToInstance(CreateBookInputDto)
-  async create(@Body() createBookDto: CreateBookInputDto) {
+  @TransformPlainToInstance(BookOutputDto)
+  async create(
+    @Body() createBookDto: CreateBookInputDto,
+  ): Promise<BookOutputDto> {
     return this.bookService.create(createBookDto);
   }
 

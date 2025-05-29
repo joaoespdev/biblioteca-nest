@@ -6,26 +6,34 @@ import {
 import { BookRepository } from './book.repository';
 import { CreateBookInputDto } from './dto/create-book-input.dto';
 import { UpdateBookInputDto } from './dto/update-book-input.dto';
+import { BookEntity } from '@interfaces/index';
 
 @Injectable()
 export class BookService {
   constructor(private readonly bookRepository: BookRepository) {}
 
-  async create(createBookDto: CreateBookInputDto) {
+  async create(createBookDto: CreateBookInputDto): Promise<BookEntity> {
     if (createBookDto.authorIds.length === 0) {
       throw new BadRequestException('At least one author is required');
     }
 
-    // Use transação se necessário, mas delegue inserts ao repositório
-    const book = await this.bookRepository.insert({
-      title: createBookDto.name,
-      isbn: createBookDto.isbn,
-      published_at: createBookDto.publicationDate,
-    });
+    try {
+      const book = await this.bookRepository.insert({
+        title: createBookDto.name,
+        isbn: createBookDto.isbn,
+        publishedAt: createBookDto.publicationDate,
+      });
 
-    await this.bookRepository.insertAuthors(book.id, createBookDto.authorIds);
+      await this.bookRepository.insertAuthors(book.id, createBookDto.authorIds);
 
-    return book;
+      return book;
+    } catch (error: unknown) {
+      const pgError = error as { code?: string; detail?: string };
+      if (pgError.code === '23503' && pgError.detail?.includes('authors')) {
+        throw new BadRequestException('One or more authors not found');
+      }
+      throw error;
+    }
   }
 
   async findAll() {
@@ -42,7 +50,7 @@ export class BookService {
     const book = await this.bookRepository.update(id, {
       title: updateBookDto.name,
       isbn: updateBookDto.isbn,
-      published_at: updateBookDto.publicationDate,
+      publishedAt: updateBookDto.publicationDate,
     });
     if (!book) throw new NotFoundException('Book not found');
 

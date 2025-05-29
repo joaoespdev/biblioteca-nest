@@ -20,7 +20,7 @@ export class RenterController {
   constructor(private readonly renterService: RenterService) {}
 
   @Post()
-  @TransformPlainToInstance(CreateRenterInputDto)
+  @TransformPlainToInstance(RenterOutputDto)
   create(@Body() createRenterDto: CreateRenterInputDto) {
     return this.renterService.create(createRenterDto);
   }

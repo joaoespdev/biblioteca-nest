@@ -39,31 +39,31 @@ export class RenterRepository {
 
   async hasActiveRental(id: number): Promise<boolean> {
     const rental = (await this.knex('rentals')
-      .where({ renter_id: id })
+      .where({ renterId: id })
       .first()) as { id: number } | undefined;
     return !!rental;
   }
 
   async findRentalsByRenter(renterId: number): Promise<any[]> {
     const rentals = (await this.knex('rentals').where({
-      renter_id: renterId,
+      renterId: renterId,
     })) as Array<{
       id: number;
-      rented_at: string;
-      returned_at?: string;
-      renter_id: number;
+      rentedAt: string;
+      returnedAt?: string;
+      renterId: number;
     }>;
 
     return Promise.all(
       rentals.map(async (rental) => {
         const books = (await this.knex('rental_books')
-          .where({ rental_id: rental.id })
-          .select('book_id')) as Array<{ book_id: number }>;
+          .where({ rentalId: rental.id })
+          .select('bookId')) as Array<{ bookId: number }>;
         return {
-          rentDate: rental.rented_at,
-          returnDate: rental.returned_at,
-          renterId: rental.renter_id,
-          bookIds: books.map((b) => b.book_id),
+          rentDate: rental.rentedAt,
+          returnDate: rental.returnedAt,
+          renterId: rental.renterId,
+          bookIds: books.map((b) => b.bookId),
         };
       }),
     );

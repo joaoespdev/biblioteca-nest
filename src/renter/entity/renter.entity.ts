@@ -6,8 +6,8 @@ export interface RenterEntity {
   gender?: GenderEnum;
   phone: string;
   email: string;
-  birth_date: Date;
+  birthDate: Date;
   cpf: string;
-  created_at: string;
-  updated_at: string;
+  createdAt: string;
+  updatedAt: string;
 }

@@ -4,13 +4,13 @@ export async function up(knex: Knex): Promise<void> {
   return knex.schema.createTable('author_books', (table) => {
     table.increments('id').primary();
     table
-      .integer('author_id')
+      .integer('authorId')
       .unsigned()
       .references('id')
       .inTable('authors')
       .onDelete('CASCADE');
     table
-      .integer('book_id')
+      .integer('bookId')
       .unsigned()
       .references('id')
       .inTable('books')

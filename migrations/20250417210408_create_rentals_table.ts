@@ -3,13 +3,13 @@ import { Knex } from 'knex';
 export async function up(knex: Knex): Promise<void> {
   return knex.schema.createTable('rentals', (table) => {
     table.increments('id').primary();
-    table.date('rented_at').notNullable().defaultTo(knex.fn.now());
+    table.date('rentedAt').notNullable().defaultTo(knex.fn.now());
     table
-      .date('due_date')
+      .date('dueDate')
       .notNullable()
       .defaultTo(knex.raw("CURRENT_DATE + INTERVAL '2 days'"));
     table
-      .integer('renter_id')
+      .integer('renterId')
       .unsigned()
       .references('id')
       .inTable('renters')

@@ -4,8 +4,16 @@ import { Exclude, Expose } from 'class-transformer';
 export class BookOutputDto {
   @Expose()
   title: string;
+
   @Expose()
   isbn: string;
+
   @Expose()
-  published_at: string;
+  publishedAt: string;
+
+  @Expose({ name: 'created_at' })
+  createdAt: string;
+
+  @Expose({ name: 'updated_at' })
+  updatedAt: string;
 }

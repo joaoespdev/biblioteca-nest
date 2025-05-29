@@ -6,6 +6,6 @@ export interface AuthorEntity {
   gender?: GenderEnum;
   birthYear: number;
   cpf: string;
-  created_at: string;
-  updated_at: string;
+  createdAt: string;
+  updatedAt: string;
 }

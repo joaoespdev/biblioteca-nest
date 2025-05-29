@@ -38,13 +38,13 @@ export class RentalRepository {
   }
 
   async deleteRentalBooks(rentalId: number): Promise<void> {
-    await this.knex('rental_books').where({ rental_id: rentalId }).del();
+    await this.knex('rental_books').where({ rentalId: rentalId }).del();
   }
 
   async insertRentalBooks(rentalId: number, bookIds: number[]): Promise<void> {
     const rentalBooks = bookIds.map((bookId) => ({
-      rental_id: rentalId,
-      book_id: bookId,
+      rentalId: rentalId,
+      bookId: bookId,
     }));
     await this.knex('rental_books').insert(rentalBooks);
   }

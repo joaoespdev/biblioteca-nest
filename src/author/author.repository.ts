@@ -49,7 +49,7 @@ export class AuthorRepository {
 
   async hasBook(id: number): Promise<boolean> {
     const has = (await this.knex('author_books')
-      .where({ author_id: id })
+      .where({ authorId: id })
       .first()) as { id: number } | undefined;
     return !!has;
   }
