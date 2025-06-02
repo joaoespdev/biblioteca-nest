@@ -4,10 +4,10 @@ import { Exclude, Expose } from 'class-transformer';
 export class RentalOutputDto {
   @Expose()
   rentDate: string;
-  @Expose()
+  @Expose({ name: 'returnedAt' })
   returnDate?: string;
   @Expose()
   renterId: number;
-  @Expose()
-  bookIds: number[];
+  @Expose({ name: 'created_at' })
+  rentedAt: string;
 }

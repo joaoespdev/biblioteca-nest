@@ -19,7 +19,7 @@ export class RentalController {
   constructor(private readonly rentalService: RentalService) {}
 
   @Post()
-  @TransformPlainToInstance(CreateRentalInputDto)
+  @TransformPlainToInstance(RentalOutputDto)
   create(@Body() createRentalDto: CreateRentalInputDto) {
     return this.rentalService.create(createRentalDto);
   }

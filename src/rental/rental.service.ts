@@ -22,10 +22,13 @@ export class RentalService {
       throw new BadRequestException('At least one book must be rented');
     }
 
-    // Se quiser usar transação, pode passar o trx para o repository
+    const rentDate = new Date(createRentalDto.rentDate);
+    const returnDate = createRentalDto.returnDate
+      ? createRentalDto.returnDate
+      : new Date(rentDate.getTime() + 2 * 24 * 60 * 60 * 1000).toISOString();
     const rental = await this.rentalRepository.insert({
       rentedAt: createRentalDto.rentDate,
-      returnedAt: createRentalDto.returnDate || undefined,
+      returnedAt: returnDate,
       renterId: createRentalDto.renterId,
     });
 
