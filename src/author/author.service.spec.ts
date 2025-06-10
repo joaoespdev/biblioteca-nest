@@ -1,110 +1,122 @@
+import { Test, TestingModule } from '@nestjs/testing';
 import { AuthorService } from './author.service';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { AuthorRepository } from './author.repository';
 import { CreateAuthorInputDto } from './dto/create-author-input.dto';
 import { UpdateAuthorInputDto } from './dto/update-author-input.dto';
-import { Knex } from 'knex';
+import { AuthorEntity } from './entity/author.entity';
+import { GenderEnum } from '../Enums/gender.enum';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 describe('AuthorService', () => {
   let service: AuthorService;
-  let knex: jest.Mock;
+  let repository: AuthorRepository;
 
-  const mockKnexQueryBuilder = {
-    insert: jest.fn().mockReturnThis(),
-    select: jest.fn().mockReturnThis(),
-    where: jest.fn().mockReturnThis(),
-    first: jest.fn().mockReturnThis(),
-    update: jest.fn().mockReturnThis(),
-    del: jest.fn().mockReturnThis(),
-    whereRaw: jest.fn().mockReturnThis(),
-    returning: jest.fn().mockReturnThis(),
+  const mockAuthor: AuthorEntity = {
+    id: 1,
+    name: 'J. R. R. Tolkien',
+    gender: GenderEnum.Male,
+    birthYear: 1892,
+    cpf: '12345678901',
+    createdAt: '2024-01-01T00:00:00.000Z',
+    updatedAt: '2024-01-01T00:00:00.000Z',
   };
 
-  beforeEach(() => {
-    knex = jest.fn().mockImplementation(() => mockKnexQueryBuilder);
-    service = new AuthorService(knex as unknown as Knex);
+  const repositoryMock = {
+    insert: jest.fn(),
+    findAll: jest.fn(),
+    findById: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
+    hasBook: jest.fn(),
+    searchByName: jest.fn(),
+  };
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        AuthorService,
+        { provide: AuthorRepository, useValue: repositoryMock },
+      ],
+    }).compile();
+
+    service = module.get<AuthorService>(AuthorService);
+    repository = module.get<AuthorRepository>(AuthorRepository);
+
     jest.clearAllMocks();
   });
 
   it('should create an author', async () => {
+    repositoryMock.insert.mockResolvedValueOnce(mockAuthor);
     const dto: CreateAuthorInputDto = {
-      name: 'Jonny Bravo',
-      gender: 'M',
-      birthYear: 1980,
-      cpf: '12345678900',
+      name: 'J. R. R. Tolkien',
+      gender: GenderEnum.Male,
+      birthYear: 1892,
+      cpf: '12345678901',
     };
+    expect(await service.create(dto)).toEqual(mockAuthor);
+    expect(repositoryMock.insert).toHaveBeenCalledWith(dto);
+  });
 
-    const expectedAuthor = {
-      id: 1,
-      name: dto.name,
-      gender: dto.gender,
-      cpf: dto.cpf,
-      birthDate: '1980-01-01T00:00:00.000Z',
+  it('should throw BadRequestException if CPF already exists', async () => {
+    repositoryMock.insert.mockRejectedValueOnce({
+      code: '23505',
+      detail: 'cpf',
+    });
+    const dto: CreateAuthorInputDto = {
+      name: 'J. R. R. Tolkien',
+      gender: GenderEnum.Male,
+      birthYear: 1892,
+      cpf: '12345678901',
     };
-
-    mockKnexQueryBuilder.returning.mockReturnValueOnce([expectedAuthor]);
-
-    const result = await service.create(dto);
-    expect(result).toEqual(expectedAuthor);
+    await expect(service.create(dto)).rejects.toThrow(BadRequestException);
   });
 
   it('should return all authors', async () => {
-    const authors = [{ id: 1, name: 'Jane' }];
-    mockKnexQueryBuilder.select.mockResolvedValueOnce(authors);
-
-    const result = await service.findAll();
-    expect(result).toEqual(authors);
+    repositoryMock.findAll.mockResolvedValueOnce([mockAuthor]);
+    expect(await service.findAll()).toEqual([mockAuthor]);
+    expect(repositoryMock.findAll).toHaveBeenCalled();
   });
 
-  it('should return one author by ID', async () => {
-    const author = { id: 1, name: 'Jane' };
-    mockKnexQueryBuilder.first.mockResolvedValueOnce(author);
-
-    const result = await service.findOne(1);
-    expect(result).toEqual(author);
+  it('should return one author by id', async () => {
+    repositoryMock.findById.mockResolvedValueOnce(mockAuthor);
+    expect(await service.findOne(1)).toEqual(mockAuthor);
+    expect(repositoryMock.findById).toHaveBeenCalledWith(1);
   });
 
-  it('should throw NotFoundException when author not found by ID', async () => {
-    mockKnexQueryBuilder.first.mockResolvedValueOnce(undefined);
-
+  it('should throw NotFoundException if author not found by id', async () => {
+    repositoryMock.findById.mockResolvedValueOnce(undefined);
     await expect(service.findOne(999)).rejects.toThrow(NotFoundException);
   });
 
   it('should update an author', async () => {
-    const updateDto: UpdateAuthorInputDto = { name: 'New Name' };
-    const updated = { id: 1, name: 'New Name' };
-
-    mockKnexQueryBuilder.returning.mockReturnValueOnce([updated]);
-
-    const result = await service.update(1, updateDto);
-    expect(result).toEqual(updated);
+    repositoryMock.update.mockResolvedValueOnce(mockAuthor);
+    const dto: UpdateAuthorInputDto = { name: 'Updated Name' };
+    expect(await service.update(1, dto)).toEqual(mockAuthor);
+    expect(repositoryMock.update).toHaveBeenCalledWith(1, dto);
   });
 
-  it('should throw NotFoundException on update if author not found', async () => {
-    mockKnexQueryBuilder.returning.mockReturnValueOnce([undefined]);
-
-    await expect(service.update(1, { name: 'X' })).rejects.toThrow(
-      NotFoundException,
-    );
+  it('should throw NotFoundException if author not found on update', async () => {
+    repositoryMock.update.mockResolvedValueOnce(undefined);
+    const dto: UpdateAuthorInputDto = { name: 'Updated Name' };
+    await expect(service.update(1, dto)).rejects.toThrow(NotFoundException);
   });
 
-  it('should delete an author', async () => {
-    mockKnexQueryBuilder.first.mockResolvedValueOnce(undefined);
-    mockKnexQueryBuilder.del.mockResolvedValueOnce(1);
-
+  it('should remove an author if no books are associated', async () => {
+    repositoryMock.hasBook.mockResolvedValueOnce(false);
+    repositoryMock.delete.mockResolvedValueOnce(undefined);
     await expect(service.remove(1)).resolves.toBeUndefined();
+    expect(repositoryMock.hasBook).toHaveBeenCalledWith(1);
+    expect(repositoryMock.delete).toHaveBeenCalledWith(1);
   });
 
-  it('should throw BadRequestException if author has books', async () => {
-    mockKnexQueryBuilder.first.mockResolvedValueOnce({ bookId: 1 });
-
+  it('should throw BadRequestException if author has books on remove', async () => {
+    repositoryMock.hasBook.mockResolvedValueOnce(true);
     await expect(service.remove(1)).rejects.toThrow(BadRequestException);
   });
 
   it('should search authors by name', async () => {
-    const authors = [{ id: 1, name: 'Ana' }];
-    mockKnexQueryBuilder.select.mockReturnValueOnce(authors);
-
-    const result = await service.searchByName('ana');
-    expect(result).toEqual(authors);
+    repositoryMock.searchByName.mockResolvedValueOnce([mockAuthor]);
+    expect(await service.searchByName('tolkien')).toEqual([mockAuthor]);
+    expect(repositoryMock.searchByName).toHaveBeenCalledWith('tolkien');
   });
 });
