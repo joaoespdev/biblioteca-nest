@@ -8,7 +8,7 @@ import {
   Length,
   Matches,
 } from 'class-validator';
-import { GenderEnum } from 'src/Enums/gender.enum';
+import { GenderEnum } from '../../Enums/gender.enum';
 
 export class CreateRenterInputDto {
   @IsNotEmpty()
