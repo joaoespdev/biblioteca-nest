@@ -13,7 +13,7 @@ import { CreateRenterInputDto } from './dto/create-renter-input.dto';
 import { UpdateRenterInputDto } from './dto/update-renter-input.dto';
 import { TransformPlainToInstance } from 'class-transformer';
 import { RenterOutputDto } from './dto/renter-output.dto';
-import { RentalOutputDto } from 'src/rental/dto/rental-output.dto';
+import { RentalOutputDto } from '../rental/dto/rental-output.dto';
 
 @Controller('renters')
 export class RenterController {
