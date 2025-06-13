@@ -99,7 +99,7 @@ PORT=3000
 NODE_ENV=development
 ```
 
-4. Subir o banco de dados com Docker Compose:
+4. Suba o banco de dados com Docker Compose:
 
 ```bash
 # Use o comando
