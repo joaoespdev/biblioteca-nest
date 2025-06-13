@@ -77,6 +77,11 @@ cd biblioteca
 npm install
 ```
 
+```bash
+# Instale o software Docker Desktop, e abra a partir do passo 4
+https://docs.docker.com/desktop/
+```
+
 3. Configure as variáveis de ambiente:
 
 Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
@@ -94,20 +99,24 @@ PORT=3000
 NODE_ENV=development
 ```
 
-4. Configure o banco de dados:
+4. Subir o banco de dados com Docker Compose:
 
 ```bash
-# Criar o banco de dados
-createdb biblioteca_db
+# Use o comando
+docker-compose up -d
 
-# Executar as migrações (Desenvolvimento)
+# Execute as migrations de Desenvolvimento
 npx knex migrate:latest --env development
 
-# Executar as migrações (Teste)
+# Execute as migrations de Teste
 npx knex migrate:latest --env test
 ```
 
 ## Executando a Aplicação
+
+```bash
+# Rode os containers do banco que irá utilizar no Docker Desktop
+```
 
 ```bash
 # Modo de desenvolvimento
@@ -116,13 +125,14 @@ npm run start:dev
 
 ## Documentação da API
 
-A documentação da API estará disponível via Swagger UI muito em breve. Após iniciar a aplicação, acesse:
+A documentação completa da API está disponível via Swagger UI. Após iniciar a aplicação, acesse:
 
 ```
-http://localhost:3000/api/docs
+http://localhost:3000/api
 ```
 
 Esta documentação interativa permite:
+
 - Explorar todos os endpoints disponíveis
 - Visualizar esquemas de requisição/resposta
 - Testar endpoints diretamente pelo navegador
@@ -130,21 +140,25 @@ Esta documentação interativa permite:
 ## Regras de Negócio
 
 ### Livros
+
 - Cada livro deve ter nome, ISBN e data de publicação
 - Cada livro deve estar associado a pelo menos um autor
 - Livros só podem ser excluídos se nunca foram alugados
 
 ### Autores
+
 - Cada autor deve ter nome, ano de nascimento e CPF
 - CPF deve ser único
 - Autores só podem ser excluídos se não possuem livros associados
 
 ### Locatários
+
 - Cada locatário deve ter nome, telefone, email, data de nascimento e CPF
 - Email e CPF devem ser únicos
 - Locatários só podem ser excluídos se não possuem livros pendentes para devolução
 
 ### Aluguéis
+
 - Cada aluguel deve incluir pelo menos um livro e exatamente um locatário
 - Por padrão, a data de devolução é definida para 2 dias após a data do aluguel
 - O sistema não cobra taxas ou multas por atrasos na devolução
