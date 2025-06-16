@@ -22,8 +22,10 @@ export class AuthorController {
 
   @ApiBody({ type: CreateAuthorInputDto })
   @Post()
-  @TransformPlainToInstance(CreateAuthorInputDto)
-  async create(@Body() CreateAuthorInputDto: CreateAuthorInputDto) {
+  @TransformPlainToInstance(AuthorOutputDto)
+  async create(
+    @Body() CreateAuthorInputDto: CreateAuthorInputDto,
+  ): Promise<AuthorOutputDto> {
     return this.authorService.create(CreateAuthorInputDto);
   }
 
