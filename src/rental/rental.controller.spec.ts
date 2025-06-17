@@ -7,6 +7,7 @@ import { instanceToPlain } from 'class-transformer';
 
 describe('RentalController', () => {
   let controller: RentalController;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let service: RentalService;
 
   const mockRental = {

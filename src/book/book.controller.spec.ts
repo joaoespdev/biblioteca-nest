@@ -8,6 +8,7 @@ import { instanceToPlain } from 'class-transformer';
 
 describe('BookController', () => {
   let controller: BookController;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let service: BookService;
 
   const mockBook: BookOutputDto = {

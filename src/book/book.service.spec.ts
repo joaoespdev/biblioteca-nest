@@ -8,6 +8,7 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 describe('BookService', () => {
   let service: BookService;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let repository: BookRepository;
 
   const mockBook: BookEntity = {

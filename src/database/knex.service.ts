@@ -6,6 +6,7 @@ import config from '../../knexfile';
 export class KnexService implements OnModuleInit, OnModuleDestroy {
   private knexInstance: Knex;
 
+  // eslint-disable-next-line @typescript-eslint/require-await
   async onModuleInit() {
     this.knexInstance = knex(config.development);
   }

@@ -8,6 +8,7 @@ import { GenderEnum } from '../Enums/gender.enum';
 
 describe('AuthorController', () => {
   let controller: AuthorController;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let service: AuthorService;
 
   const mockAuthor: AuthorOutputDto = {

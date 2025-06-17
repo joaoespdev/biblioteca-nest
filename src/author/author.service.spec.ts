@@ -9,6 +9,7 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 describe('AuthorService', () => {
   let service: AuthorService;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let repository: AuthorRepository;
 
   const mockAuthor: AuthorEntity = {
