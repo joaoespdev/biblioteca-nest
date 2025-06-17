@@ -1,13 +1,17 @@
 import type { Knex } from 'knex';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 const config: { [key: string]: Knex.Config } = {
   development: {
     client: 'pg',
     connection: {
-      host: 'localhost',
-      user: 'admin',
-      password: '123',
-      database: 'crud_biblioteca',
+      host: process.env.DB_HOST,
+      port: Number(process.env.DB_PORT),
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
     },
     migrations: {
       directory: './migrations',
@@ -16,11 +20,11 @@ const config: { [key: string]: Knex.Config } = {
   test: {
     client: 'pg',
     connection: {
-      host: 'localhost',
-      port: 5433,
-      user: 'admin',
-      password: '123',
-      database: 'crud_biblioteca_test',
+      host: process.env.DB_HOST,
+      port: Number(process.env.DB_PORT_TEST) || Number(process.env.DB_PORT),
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME_TEST,
     },
     migrations: {
       directory: './migrations',

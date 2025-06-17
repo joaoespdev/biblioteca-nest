@@ -90,13 +90,12 @@ Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
 # Configuração do Banco de Dados
 DB_HOST=localhost
 DB_PORT=5432
-DB_USER=postgres
+DB_USER=seu_usuario
 DB_PASSWORD=sua_senha
 DB_NAME=biblioteca_db
 
-# Configuração da Aplicação
-PORT=3000
-NODE_ENV=development
+DB_PORT_TEST=5432
+DB_NAME_TEST=crud_biblioteca_test
 ```
 
 4. Suba o banco de dados com Docker Compose:
