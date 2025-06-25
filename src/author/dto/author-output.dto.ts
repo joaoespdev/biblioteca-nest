@@ -1,4 +1,4 @@
-import { Exclude, Expose } from 'class-transformer';
+import { Exclude, Expose, Type } from 'class-transformer';
 import { GenderEnum } from '../../Enums/gender.enum';
 
 @Exclude()
@@ -13,6 +13,7 @@ export class AuthorOutputDto {
   gender?: GenderEnum;
 
   @Expose()
+  @Type(() => Number)
   birthYear: number;
 
   @Expose()
