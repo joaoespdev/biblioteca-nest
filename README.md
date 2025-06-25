@@ -92,17 +92,21 @@ DB_HOST=localhost
 DB_PORT=5432
 DB_USER=seu_usuario
 DB_PASSWORD=sua_senha
-DB_NAME=biblioteca_db
+DB_NAME=crud_biblioteca
 
-DB_PORT_TEST=5432
+
+DB_PORT_TEST=5433
 DB_NAME_TEST=crud_biblioteca_test
 ```
 
-4. Suba o banco de dados com Docker Compose:
+4. Suba o banco de dados no Docker com os comandos:
 
 ```bash
-# Use o comando
-docker-compose up -d
+# Banco de desenvolvimento
+docker run --name banco_desenvolvimento -e POSTGRES_USER=seu_usuario -e POSTGRES_PASSWORD=123 -e POSTGRES_DB=crud_biblioteca -p 5432:5432 -d postgres:15
+
+# Banco de teste
+docker run --name banco_testes -e POSTGRES_USER=seu_usuario -e POSTGRES_PASSWORD=123 -e POSTGRES_DB=crud_biblioteca_test -p 5433:5432 -d postgres:15
 
 # Execute as migrations de Desenvolvimento
 npx knex migrate:latest --env development

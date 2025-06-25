@@ -34,5 +34,6 @@ const config: { [key: string]: Knex.Config } = {
     },
   },
 };
+console.log('Knex config:', config);
 
 export default config;
