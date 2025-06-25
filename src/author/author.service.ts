@@ -18,7 +18,7 @@ export class AuthorService {
     } catch (error: unknown) {
       const pgError = error as { code?: string; detail?: string };
       if (pgError.code === '23505' && pgError.detail?.includes('cpf')) {
-        throw new BadRequestException('CPF já cadastrado');
+        throw new BadRequestException('CPF already exists');
       }
       throw error;
     }
@@ -30,19 +30,19 @@ export class AuthorService {
 
   async findOne(id: number): Promise<AuthorEntity> {
     const author = await this.authorRepository.findById(id);
-    if (!author) throw new NotFoundException('Autor não encontrado');
+    if (!author) throw new NotFoundException('Author not found');
     return author;
   }
 
   async update(id: number, dto: UpdateAuthorInputDto): Promise<AuthorEntity> {
     const author = await this.authorRepository.update(id, dto);
-    if (!author) throw new NotFoundException('Autor não encontrado');
+    if (!author) throw new NotFoundException('Author not found');
     return author;
   }
 
   async remove(id: number): Promise<void> {
     if (await this.authorRepository.hasBook(id)) {
-      throw new BadRequestException('Autor possui livros associados');
+      throw new BadRequestException('Author has associated books');
     }
     await this.authorRepository.delete(id);
   }

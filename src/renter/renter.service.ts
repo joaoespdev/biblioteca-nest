@@ -20,10 +20,10 @@ export class RenterService {
     } catch (error: unknown) {
       const pgError = error as { code?: string; detail?: string };
       if (pgError.code === '23505' && pgError.detail?.includes('email')) {
-        throw new BadRequestException('E-mail já cadastrado');
+        throw new BadRequestException('Email already exists');
       }
       if (pgError.code === '23505' && pgError.detail?.includes('cpf')) {
-        throw new BadRequestException('CPF já cadastrado');
+        throw new BadRequestException('CPF already exists');
       }
       throw error;
     }
