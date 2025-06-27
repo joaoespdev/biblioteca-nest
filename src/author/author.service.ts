@@ -48,6 +48,13 @@ export class AuthorService {
   }
 
   async searchByName(name: string): Promise<AuthorEntity[]> {
-    return this.authorRepository.searchByName(name);
+    if (!name) {
+      throw new NotFoundException('Must be provided a name to search');
+    }
+    const author = await this.authorRepository.searchByName(name);
+    if (!author || author.length === 0) {
+      throw new NotFoundException('Author not found');
+    }
+    return author;
   }
 }

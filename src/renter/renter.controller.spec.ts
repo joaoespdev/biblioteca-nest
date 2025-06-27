@@ -3,7 +3,7 @@ import { RenterController } from './renter.controller';
 import { RenterService } from './renter.service';
 import { CreateRenterInputDto } from './dto/create-renter-input.dto';
 import { UpdateRenterInputDto } from './dto/update-renter-input.dto';
-import { GenderEnum } from '../Enums/gender.enum';
+import { GenderEnum } from '../enums/gender.enum';
 import { RenterOutputDto } from './dto/renter-output.dto';
 import { RentalOutputDto } from '../rental/dto/rental-output.dto';
 

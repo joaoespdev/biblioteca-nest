@@ -3,7 +3,7 @@ import { RenterService } from './renter.service';
 import { RenterRepository } from './renter.repository';
 import { CreateRenterInputDto } from './dto/create-renter-input.dto';
 import { UpdateRenterInputDto } from './dto/update-renter-input.dto';
-import { GenderEnum } from '../Enums/gender.enum';
+import { GenderEnum } from '../enums/gender.enum';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 describe('RenterService', () => {

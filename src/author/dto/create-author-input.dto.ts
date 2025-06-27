@@ -6,7 +6,7 @@ import {
   IsString,
   Length,
 } from 'class-validator';
-import { GenderEnum } from '../../Enums/gender.enum';
+import { GenderEnum } from '../../enums/gender.enum';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateAuthorInputDto {

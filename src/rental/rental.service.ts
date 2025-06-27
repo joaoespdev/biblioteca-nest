@@ -41,7 +41,15 @@ export class RentalService {
   }
 
   async findAll() {
-    return this.rentalRepository.findAll();
+    const rentals = await this.rentalRepository.findAll();
+    return Promise.all(
+      rentals.map(async (rental) => {
+        const bookIds = await this.rentalRepository.findBookIdsByRentalId(
+          rental.id,
+        );
+        return { ...rental, bookIds };
+      }),
+    );
   }
 
   async findOne(id: number) {
@@ -49,7 +57,10 @@ export class RentalService {
     if (!rental) {
       throw new NotFoundException('Rental not found');
     }
-    return rental;
+    const bookIds = await this.rentalRepository.findBookIdsByRentalId(
+      rental.id,
+    );
+    return { ...rental, bookIds };
   }
 
   async update(id: number, updateRentalDto: UpdateRentalInputDto) {

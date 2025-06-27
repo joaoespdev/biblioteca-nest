@@ -1,4 +1,4 @@
-import { GenderEnum } from 'src/Enums/gender.enum';
+import { GenderEnum } from 'src/enums/gender.enum';
 
 export interface RenterEntity {
   id: number;

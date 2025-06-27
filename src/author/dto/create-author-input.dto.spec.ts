@@ -1,4 +1,4 @@
-import { GenderEnum } from '../../Enums/gender.enum';
+import { GenderEnum } from '../../enums/gender.enum';
 import { CreateAuthorInputDto } from './create-author-input.dto';
 import { validate } from 'class-validator';
 

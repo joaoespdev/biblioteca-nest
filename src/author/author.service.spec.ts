@@ -4,7 +4,7 @@ import { AuthorRepository } from './author.repository';
 import { CreateAuthorInputDto } from './dto/create-author-input.dto';
 import { UpdateAuthorInputDto } from './dto/update-author-input.dto';
 import { AuthorEntity } from './entity/author.entity';
-import { GenderEnum } from '../Enums/gender.enum';
+import { GenderEnum } from '../enums/gender.enum';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 describe('AuthorService', () => {

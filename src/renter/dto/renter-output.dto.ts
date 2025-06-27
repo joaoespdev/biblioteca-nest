@@ -1,5 +1,5 @@
 import { Exclude, Expose } from 'class-transformer';
-import { GenderEnum } from '../../Enums/gender.enum';
+import { GenderEnum } from '../../enums/gender.enum';
 
 @Exclude()
 export class RenterOutputDto {

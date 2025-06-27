@@ -1,6 +1,6 @@
 import { validate } from 'class-validator';
 import { CreateRenterInputDto } from './create-renter-input.dto';
-import { GenderEnum } from '../../Enums/gender.enum';
+import { GenderEnum } from '../../enums/gender.enum';
 
 describe('CreateRenterInputDto', () => {
   it('should validate a correct DTO', async () => {

@@ -4,7 +4,7 @@ import { AuthorService } from './author.service';
 import { CreateAuthorInputDto } from './dto/create-author-input.dto';
 import { UpdateAuthorInputDto } from './dto/update-author-input.dto';
 import { AuthorOutputDto } from './dto/author-output.dto';
-import { GenderEnum } from '../Enums/gender.enum';
+import { GenderEnum } from '../enums/gender.enum';
 
 describe('AuthorController', () => {
   let controller: AuthorController;

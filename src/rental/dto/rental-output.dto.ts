@@ -10,4 +10,6 @@ export class RentalOutputDto {
   renterId: number;
   @Expose({ name: 'created_at' })
   rentedAt: string;
+  @Expose()
+  bookIds: number[];
 }

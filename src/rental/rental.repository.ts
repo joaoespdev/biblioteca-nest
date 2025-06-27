@@ -18,6 +18,13 @@ export class RentalRepository {
     return this.knex<RentalEntity>('rentals').select('*');
   }
 
+  async findBookIdsByRentalId(rentalId: number): Promise<number[]> {
+    const rows: { bookId: number }[] = await this.knex('rental_books')
+      .where({ rentalId })
+      .select('bookId');
+    return rows.map((row) => row.bookId);
+  }
+
   async findById(id: number): Promise<RentalEntity | undefined> {
     return this.knex<RentalEntity>('rentals').where({ id }).first();
   }
